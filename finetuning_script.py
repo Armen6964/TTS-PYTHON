@@ -15,8 +15,6 @@ print(f"Original vocab size: {len(tokenizer)}")
 tokenizer.add_tokens(list(armenian_chars))
 print(f"New vocab size: {len(tokenizer)}")
 
-# model.decoder.resize_token_embeddings(len(tokenizer))
-
 processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
 
 # Update the processor's tokenizer
@@ -60,6 +58,7 @@ class ArmenianOCRDataset(Dataset):
 
 
 model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed")
+model.decoder.resize_token_embeddings(len(tokenizer))
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id or processor.tokenizer.pad_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
 model.config.eos_token_id = processor.tokenizer.eos_token_id
