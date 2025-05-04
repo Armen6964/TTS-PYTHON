@@ -80,7 +80,7 @@ class ArmenianOCRDataset(Dataset):
             print(f"Training sample: {text} → {tokenizer.encode(text)}")  # Debug
             
         pixel_values = self.processor(images=image, return_tensors="pt").pixel_values.squeeze()
-        labels = self.processor.tokenizer.tokenize(text, return_tensors="pt").input_ids.squeeze()
+        labels = self.processor.tokenizer(text, return_tensors="pt").input_ids.squeeze()
         
         return {"pixel_values": pixel_values, "labels": labels}
 
