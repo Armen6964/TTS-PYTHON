@@ -1,3 +1,4 @@
+import finetuning_script
 import asyncio
 import logging
 from telegram import Update
@@ -28,8 +29,8 @@ project_url = "https://wav.am/generate_audio/"
 access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI5OTJkN2JlZTU0MDg0NjQzYjNkMGYwM2E2MjZhYTk5NSIsInVzZXJuYW1lIjoiVGF0ZXZpa01pbmFzeWFuIiwiY29ubmVjdGlvbiI6ImFwaSIsImV4cCI6MTc1MjAxOTIwMCwiaWF0IjoxNzQwNzY4NDQ4fQ.-YK_r14xSur2piExP20byInn9muE0PFD_PMTGdm6wqw"
 
 # pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
-processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
-model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed")
+processor = TrOCRProcessor.from_pretrained("./trained_models/trocr-hye")
+model = VisionEncoderDecoderModel.from_pretrained("./trained_models/trocr-hye")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 # if "test" not in dataset:
@@ -42,6 +43,7 @@ def extract_text_from_image(image_path):
     pixel_values = processor(images=image, return_tensors="pt").pixel_values.to(device)
     generated_ids = model.generate(pixel_values)
     text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+    print(text)
     return text
 
 
@@ -143,69 +145,6 @@ def preprocess(example):
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-#Last changes
-# def extract_text_from_image(image_path):
-#     """Extract text from image using Tesseract OCR"""
-#     try:
-#         image = cv2.imread(image_path)
-#         if image is None:
-#             return "Failed to load image"
-#
-#         # Extract text using Tesseract
-#         extracted_text = pytesseract.image_to_string(image, lang='hye+eng')
-#         return extracted_text.strip()
-#     except Exception as e:
-#         logger.error(f"Error extracting text: {e}")
-#         return f"Error extracting text: {str(e)}"
-
-#Last changes
-# @app.route('/process', methods=['POST'])
-# def process_image():
-#     if 'file' not in request.files:
-#         return 'No file part', 400
-#     file = request.files['file']
-#     if file.filename == '':
-#         return 'No selected file', 400
-#
-#     if file:
-#         image = Image.open(file)
-#         text = pytesseract.image_to_string(image, lang='eng')  # Set the correct language if needed
-#         return f'<h1>Extracted Text:</h1><pre>{text}</pre>'
-#
-#
-#     if 'file' not in request.files:
-#         return jsonify({"error": "No file uploaded"}), 400
-#
-#     if file.filename == '':
-#         return jsonify({"error": "No selected file"}), 400
-#
-#     if file and allowed_file(file.filename):
-#         # Save the file
-#         filename = secure_filename(file.filename)
-#         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-#         file.save(file_path)
-#
-#     extracted_text = extract_text_from_image(file_path)
-
-#don't take off the #
-#     # Generate audio if text was extracted
-#     audio_url = None
-#
-#     # if extracted_text:
-#     #     audio_url = process_image(extracted_text)
-#     #
-#     return jsonify({
-#         "success": True,
-#         "text": extracted_text,
-#         "audio_url": audio_url
-#     })
-#
-#
-#
-#     # temp_image_path = os.path.join(tempfile.gettempdir(), 'uploaded_image.png')
-#     # image_file.save(temp_image_path)
 
 
 @router.message(Command("start"))

@@ -18,7 +18,6 @@ class ArmenianOCRDataset(Dataset):
         for file in files:
             image_path = os.path.join(image_dir, file)
             txt_path = os.path.join(image_dir, file.replace(".png", ".txt"))
-            print(image_path, txt_path)
             if os.path.exists(txt_path):
                 self.samples.append((image_path, txt_path))
             if max_samples and len(self.samples) >= max_samples:
