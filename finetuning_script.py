@@ -3,12 +3,24 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 from PIL import Image
 import torch
 from torch.utils.data import Dataset
-from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, TrainingArguments
-
+from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, TrainingArguments, AutoTokenizer
 
 print("1")
+
+armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
+
+tokenizer = AutoTokenizer.from_pretrained("microsoft/trocr-large-printed")
+
+print(f"Original vocab size: {len(tokenizer)}")
+tokenizer.add_tokens(list(armenian_chars))
+print(f"New vocab size: {len(tokenizer)}")
+
+model.decoder.resize_token_embeddings(len(tokenizer))
+
 processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
 
+# Update the processor's tokenizer
+processor.tokenizer = tokenizer
 
 # Test the tokenizer with Armenian text
 sample_text = "Ողջույն"  # Armenian for "Hello"
