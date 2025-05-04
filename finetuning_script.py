@@ -12,7 +12,7 @@ from tqdm import tqdm
 # ======================
 print("Initializing tokenizer...")
 
-armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟".encode("utf-8")
+armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/trocr-large-printed")
 print(f"Original vocab size: {len(tokenizer)}")
