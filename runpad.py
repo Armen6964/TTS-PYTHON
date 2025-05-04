@@ -4,13 +4,14 @@ from paddleocr import PaddleOCR
 ocr = PaddleOCR(
     use_angle_cls=True,
     lang='en',
-    rec_char_dict_path='./armenian_dict_padded_662.txt',
+    rec_char_dict_path='~/PaddleOCR/configs/rec/multi_language/rec_crnn_armenian.yml',
     det_model_dir='models/det',
-    rec_model_dir='models/rec'
+    rec_model_dir='~/PaddleOCR/output/rec_armenian_lite/latest'
+   
 )
 
 # Run OCR on an image
-image_path = 'static/a.png'
+image_path = '~/PaddleOCR/train_data/armenian/images/0001.jpg'
 results = ocr.ocr(image_path, cls=True)
 
 print(results)
