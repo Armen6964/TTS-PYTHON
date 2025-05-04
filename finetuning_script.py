@@ -32,6 +32,7 @@ class ArmenianOCRDataset(Dataset):
         image = Image.open(image_path).convert("RGB")
         with open(txt_path, 'r', encoding='utf-8') as f:
             text = f.read().strip()
+            print(text);
 
         pixel_values = self.processor(images=image, return_tensors="pt").pixel_values.squeeze()
         labels = self.processor.tokenizer(text, return_tensors="pt").input_ids.squeeze()
