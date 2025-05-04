@@ -10,28 +10,17 @@ from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, Tra
 # ======================
 print("Initializing tokenizer...")
 
-# Armenian character set (adjust as needed)
 armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
 
-# Initialize tokenizer
 tokenizer = AutoTokenizer.from_pretrained("microsoft/trocr-large-printed")
 print(f"Original vocab size: {len(tokenizer)}")
 
-# Add Armenian characters
 tokenizer.add_tokens(list(armenian_chars))
 print(f"New vocab size: {len(tokenizer)}")
 
-# Verify tokenization
-test_text = "Բարև Հայաստան"  # "Hello Armenia"
+test_text = "Բարև Հայաստան"
 tokens = tokenizer.tokenize(test_text)
 print(f"Tokenization test: {tokens}")
-
-# Check for missing characters
-for char in armenian_chars:
-    if char not in tokenizer.get_vocab():
-        print(f"ERROR: '{char}' missing in tokenizer!")
-    else:
-        print(f"'{char}' → ID {tokenizer.convert_tokens_to_ids(char)}")
 
 # ======================
 # 2. MODEL SETUP
@@ -39,12 +28,11 @@ for char in armenian_chars:
 print("\nInitializing model...")
 
 processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
-processor.tokenizer = tokenizer  # Update processor
+processor.tokenizer = tokenizer
 
 model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed")
-model.decoder.resize_token_embeddings(len(tokenizer))  # Must be AFTER loading!
+model.decoder.resize_token_embeddings(len(tokenizer))
 
-# Configure model
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id or processor.tokenizer.pad_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
 model.config.eos_token_id = processor.tokenizer.eos_token_id
@@ -74,18 +62,21 @@ class ArmenianOCRDataset(Dataset):
     def __getitem__(self, idx):
         image_path, txt_path = self.samples[idx]
         image = Image.open(image_path).convert("RGB")
-        
+
+        # Resize image to 384x384
+        image = image.resize((384, 384))
+
         with open(txt_path, 'r', encoding='utf-8') as f:
             text = f.read().strip()
             print(f"Training sample: {text} → {tokenizer.encode(text)}")  # Debug
-            
+
         pixel_values = self.processor(images=image, return_tensors="pt").pixel_values.squeeze()
         labels = self.processor.tokenizer(text, return_tensors="pt").input_ids.squeeze()
-        
+
         return {"pixel_values": pixel_values, "labels": labels}
 
 # ======================
-# 4. TRAINING SETUP
+# 4. COLLATE FUNCTION
 # ======================
 def collate_fn(batch):
     pixel_values = [item["pixel_values"] for item in batch]
@@ -99,18 +90,19 @@ def collate_fn(batch):
     )
     return {"pixel_values": pixel_values, "labels": labels}
 
+# ======================
+# 5. TRAINING
+# ======================
 def main():
     torch.cuda.empty_cache()
-    
-    # Data
-    train_dataset = ArmenianOCRDataset("../data", processor)
-    
-    # Training
+
+    train_dataset = ArmenianOCRDataset("../data", processor)  # <-- Put your dataset path here
+
     training_args = TrainingArguments(
         output_dir="./trocr-hye-trained",
-        per_device_train_batch_size=4,  # Increased from 1
-        num_train_epochs=2,           # Increased from 2
-        learning_rate=5e-5,            # Explicitly set
+        per_device_train_batch_size=4,
+        num_train_epochs=2,
+        learning_rate=5e-5,
         fp16=True,
         logging_steps=50,
         save_strategy="epoch",
@@ -118,7 +110,7 @@ def main():
         remove_unused_columns=False,
         report_to="none"
     )
-    
+
     trainer = Trainer(
         model=model,
         args=training_args,
@@ -126,14 +118,13 @@ def main():
         tokenizer=processor.tokenizer,
         data_collator=collate_fn
     )
-    
+
     print("\nStarting training...")
     trainer.train()
-    
-    # Save final model
+
     model.save_pretrained("./trocr-hye-trained")
     processor.save_pretrained("./trocr-hye-trained")
-    print("Training complete!")
+    print("✅ Training complete!")
 
 if __name__ == "__main__":
     main()
