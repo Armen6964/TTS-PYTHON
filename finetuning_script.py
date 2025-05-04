@@ -11,7 +11,7 @@ from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, Tra
 print("Initializing tokenizer...")
 
 # Armenian character set (adjust as needed)
-armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
+armenian_chars = "բգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
 
 # Initialize tokenizer
 tokenizer = AutoTokenizer.from_pretrained("microsoft/trocr-large-printed")
@@ -109,7 +109,7 @@ def main():
     training_args = TrainingArguments(
         output_dir="./trocr-hye-trained",
         per_device_train_batch_size=4,  # Increased from 1
-        num_train_epochs=10,           # Increased from 2
+        num_train_epochs=2,           # Increased from 2
         learning_rate=5e-5,            # Explicitly set
         fp16=True,
         logging_steps=50,
