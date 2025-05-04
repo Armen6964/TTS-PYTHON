@@ -78,7 +78,7 @@ def main():
     print("4")
     training_args = TrainingArguments(
         output_dir="./trained_models/trocr-hye",
-        per_device_train_batch_size=4,
+        per_device_train_batch_size=1,
         num_train_epochs=5,
         logging_dir="./static/uploads/logs",
         logging_steps=10,
