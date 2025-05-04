@@ -11,7 +11,7 @@ from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, Tra
 print("Initializing tokenizer...")
 
 # Armenian character set (adjust as needed)
-armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
+armenian_chars = "բգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
 
 # Initialize tokenizer
 tokenizer = AutoTokenizer.from_pretrained("microsoft/trocr-large-printed")
