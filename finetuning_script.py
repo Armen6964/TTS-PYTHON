@@ -32,6 +32,7 @@ processor.tokenizer = tokenizer
 
 model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed")
 model.decoder.resize_token_embeddings(len(tokenizer))
+model.encoder.resize_token_embeddings(len(tokenizer))
 
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id or processor.tokenizer.pad_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
