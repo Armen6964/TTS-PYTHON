@@ -15,7 +15,7 @@ print(f"Original vocab size: {len(tokenizer)}")
 tokenizer.add_tokens(list(armenian_chars))
 print(f"New vocab size: {len(tokenizer)}")
 
-model.decoder.resize_token_embeddings(len(tokenizer))
+# model.decoder.resize_token_embeddings(len(tokenizer))
 
 processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
 
