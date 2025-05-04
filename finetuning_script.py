@@ -12,7 +12,7 @@ from tqdm import tqdm
 # ======================
 print("Initializing tokenizer...")
 
-armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
+armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟".encode("utf-8")
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/trocr-large-printed")
 print(f"Original vocab size: {len(tokenizer)}")
@@ -45,15 +45,15 @@ model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed
 
 # Debug embeddings before/after resize
 print(f"Original embedding size: {model.decoder.get_input_embeddings().weight.shape[0]}")
-model.decoder.resize_token_embeddings(len(tokenizer))
+# model.decoder.resize_token_embeddings(len(tokenizer))
 print(f"New embedding size: {model.decoder.get_input_embeddings().weight.shape[0]}")
 
 # Initialize new embeddings properly
-with torch.no_grad():
-    old_embeddings = model.decoder.get_input_embeddings().weight.data
-    mean_embedding = old_embeddings[:-len(armenian_chars)].mean(dim=0)  # Use mean of existing embeddings
-    for i in range(len(tokenizer)-len(armenian_chars), len(tokenizer)):
-        model.decoder.get_input_embeddings().weight.data[i] = mean_embedding + torch.randn_like(mean_embedding)*0.01
+# with torch.no_grad():
+#     old_embeddings = model.decoder.get_input_embeddings().weight.data
+#     mean_embedding = old_embeddings[:-len(armenian_chars)].mean(dim=0)  # Use mean of existing embeddings
+#     for i in range(len(tokenizer)-len(armenian_chars), len(tokenizer)):
+#         model.decoder.get_input_embeddings().weight.data[i] = mean_embedding + torch.randn_like(mean_embedding)*0.01
 
 # Config updates
 model.config.decoder_start_token_id = tokenizer.cls_token_id or tokenizer.pad_token_id
