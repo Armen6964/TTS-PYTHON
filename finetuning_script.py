@@ -78,7 +78,7 @@ def main():
     training_args = TrainingArguments(
         output_dir="./trained_models/trocr-hye",
         per_device_train_batch_size=1,
-        num_train_epochs=5,
+        num_train_epochs=2,
         logging_dir="./static/uploads/logs",
         logging_steps=10,
         save_strategy="epoch",
