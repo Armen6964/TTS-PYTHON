@@ -13,6 +13,8 @@ ocr = PaddleOCR(
 image_path = './static/armenian_text_line.png'
 results = ocr.ocr(image_path, cls=True)
 
+print(results)
+
 # Print recognized text
 for line in results[0]:
     text = line[1][0]
