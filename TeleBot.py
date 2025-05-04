@@ -9,7 +9,7 @@ import torch
 # import pytesseract
 import requests
 from PIL import Image
-import jwt
+# import jwt
 from aiogram import Bot, Dispatcher, Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
@@ -80,8 +80,8 @@ def handle_photo(update: Update, context: CallbackContext):
 #
 # trainer.train()
 
-payload = jwt.decode(access_token, options={"verify_signature": False})
-print(payload)
+# payload = jwt.decode(access_token, options={"verify_signature": False})
+# print(payload)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
