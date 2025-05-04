@@ -44,7 +44,7 @@ def extract_text_from_image(image_path):
     generated_ids = model.generate(pixel_values)
     text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
     print(text)
-    return text
+    return text.encode("utf-8")
 
 
 def handle_photo(update: Update, context: CallbackContext):
