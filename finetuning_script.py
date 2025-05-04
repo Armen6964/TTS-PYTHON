@@ -45,7 +45,7 @@ model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed
 
 # Debug embeddings before/after resize
 print(f"Original embedding size: {model.decoder.get_input_embeddings().weight.shape[0]}")
-model.decoder.resize_token_embeddings(len(tokenizer))
+# model.decoder.resize_token_embeddings(len(tokenizer))
 print(f"New embedding size: {model.decoder.get_input_embeddings().weight.shape[0]}")
 
 # Initialize new embeddings properly
@@ -79,6 +79,7 @@ class ArmenianOCRDataset(Dataset):
         for file in tqdm(files[:max_samples], desc="Loading dataset"):
             image_path = os.path.join(image_dir, file)
             txt_path = os.path.join(image_dir, file.replace(".png", ".txt"))
+            print(f"Loading sample: {image_path} → {txt_path}")
             if os.path.exists(txt_path):
                 self.samples.append((image_path, txt_path))
 
@@ -113,7 +114,7 @@ def main():
     model.to(device)
 
     # Load data
-    train_dataset = ArmenianOCRDataset("../data", processor, max_samples=589)
+    train_dataset = ArmenianOCRDataset("../testdata", processor, max_samples=589)
     print(f"Loaded {len(train_dataset)} samples")
 
     # Training arguments
