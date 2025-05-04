@@ -1,0 +1,104 @@
+import os
+from PIL import Image
+import torch
+from torch.utils.data import Dataset
+from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, TrainingArguments
+
+
+print("1")
+
+class ArmenianOCRDataset(Dataset):
+    def __init__(self, image_dir, processor, max_samples=None):
+        self.image_dir = image_dir
+        self.processor = processor
+        self.samples = []
+
+        files = sorted([f for f in os.listdir(image_dir) if f.endswith(".png")])
+        print(files)
+        for file in files:
+            image_path = os.path.join(image_dir, file)
+            txt_path = os.path.join(image_dir, file.replace(".png", ".txt"))
+            print(image_path, txt_path)
+            if os.path.exists(txt_path):
+                self.samples.append((image_path, txt_path))
+            if max_samples and len(self.samples) >= max_samples:
+                break
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        image_path, txt_path = self.samples[idx]
+        image = Image.open(image_path).convert("RGB")
+        with open(txt_path, 'r', encoding='utf-8') as f:
+            text = f.read().strip()
+
+        pixel_values = self.processor(images=image, return_tensors="pt").pixel_values.squeeze()
+        labels = self.processor.tokenizer(text, return_tensors="pt").input_ids.squeeze()
+
+        return {"pixel_values": pixel_values, "labels": labels}
+
+
+processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
+model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed")
+model.config.decoder_start_token_id = processor.tokenizer.cls_token_id or processor.tokenizer.pad_token_id
+model.config.pad_token_id = processor.tokenizer.pad_token_id
+model.config.eos_token_id = processor.tokenizer.eos_token_id
+print("2")
+
+# def collate_fn(batch):
+#     pixel_values = [item["pixel_values"] for item in batch]
+#     labels = [item["labels"] for item in batch]
+#     text = [item["text"] for item in batch]
+#
+#     pixel_values = torch.stack(pixel_values)
+#     labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True,
+#                                              padding_value=processor.tokenizer.pad_token_id)
+#
+#     return {"pixel_values": pixel_values, "labels": labels, "text": text}
+
+
+def collate_fn(batch):
+    pixel_values = [item["pixel_values"] for item in batch]
+    labels = [item["labels"] for item in batch]
+
+    pixel_values = torch.stack(pixel_values)
+    labels = torch.nn.utils.rnn.pad_sequence(
+        labels,
+        batch_first=True,
+        padding_value=processor.tokenizer.pad_token_id
+    )
+
+    return {"pixel_values": pixel_values, "labels": labels}
+
+
+def main():
+    print("3")
+    train_dataset = ArmenianOCRDataset("/Users/tat/Desktop/Start_train", processor)
+    print("4")
+    training_args = TrainingArguments(
+        output_dir="/Users/tat/Desktop/trocr_armenian_model",
+        per_device_train_batch_size=4,
+        num_train_epochs=5,
+        logging_dir="/Users/tat/Desktop/logs",
+        logging_steps=10,
+        save_strategy="epoch",
+        save_total_limit=2,
+        remove_unused_columns=False,
+        #Last changes
+        do_train=True
+    )
+    print("5")
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        tokenizer=processor.tokenizer,
+        data_collator=collate_fn
+    )
+    print("6")
+    trainer.train()
+    print("7")
+
+
+main()
