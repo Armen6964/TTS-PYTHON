@@ -5,12 +5,12 @@ ocr = PaddleOCR(
     use_angle_cls=True,
     lang='en',
     rec_char_dict_path='dict/armenian_dict.txt',
-    det_model_dir='./models/det',
-    rec_model_dir='./models/rec'
+    det_model_dir='models/det',
+    rec_model_dir='models/rec'
 )
 
 # Run OCR on an image
-image_path = './static/armenian_text_line.png'
+image_path = 'static/armenian_text_line.png'
 results = ocr.ocr(image_path, cls=True)
 
 print(results)
