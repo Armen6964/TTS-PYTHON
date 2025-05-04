@@ -1,4 +1,5 @@
 import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 from PIL import Image
 import torch
 from torch.utils.data import Dataset
@@ -43,6 +44,8 @@ model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id or processor.tokenizer.pad_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
 model.config.eos_token_id = processor.tokenizer.eos_token_id
+model.gradient_checkpointing_enable()
+
 print("2")
 
 # def collate_fn(batch):
@@ -73,11 +76,14 @@ def collate_fn(batch):
 
 def main():
     print("3")
+    torch.cuda.empty_cache()
+
     train_dataset = ArmenianOCRDataset("../data", processor)
     print("4")
     training_args = TrainingArguments(
         output_dir="./trained_models/trocr-hye",
         per_device_train_batch_size=1,
+        fp16=True,
         num_train_epochs=2,
         logging_dir="./static/uploads/logs",
         logging_steps=10,
