@@ -12,7 +12,7 @@ from tqdm import tqdm
 # ======================
 print("Initializing tokenizer...")
 
-armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟";
+armenian_chars = "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆևԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏՐՑՒՓՔՕՖՙ՚՛՜՝՞՟"
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/trocr-large-printed")
 print(f"Original vocab size: {len(tokenizer)}")
@@ -45,15 +45,15 @@ model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed
 
 # Debug embeddings before/after resize
 print(f"Original embedding size: {model.decoder.get_input_embeddings().weight.shape[0]}")
-model.decoder.resize_token_embeddings(len(tokenizer))
+# model.decoder.resize_token_embeddings(len(tokenizer))
 print(f"New embedding size: {model.decoder.get_input_embeddings().weight.shape[0]}")
 
-#Initialize new embeddings properly
-with torch.no_grad():
-    old_embeddings = model.decoder.get_input_embeddings().weight.data
-    mean_embedding = old_embeddings[:-len(armenian_chars)].mean(dim=0)  # Use mean of existing embeddings
-    for i in range(len(tokenizer)-len(armenian_chars), len(tokenizer)):
-        model.decoder.get_input_embeddings().weight.data[i] = mean_embedding + torch.randn_like(mean_embedding)*0.01
+# Initialize new embeddings properly
+# with torch.no_grad():
+#     old_embeddings = model.decoder.get_input_embeddings().weight.data
+#     mean_embedding = old_embeddings[:-len(armenian_chars)].mean(dim=0)  # Use mean of existing embeddings
+#     for i in range(len(tokenizer)-len(armenian_chars), len(tokenizer)):
+#         model.decoder.get_input_embeddings().weight.data[i] = mean_embedding + torch.randn_like(mean_embedding)*0.01
 
 # Config updates
 model.config.decoder_start_token_id = tokenizer.cls_token_id or tokenizer.pad_token_id
@@ -69,11 +69,11 @@ class ArmenianOCRDataset(Dataset):
         self.image_dir = image_dir
         self.processor = processor
         self.samples = []
-        # self.transform = transforms.Compose([
-        #     transforms.RandomRotation(5),
-        #     transforms.ColorJitter(brightness=0.1, contrast=0.1),
-        #     transforms.Resize((384, 384)),  # Fixed size for ViT
-        # ])
+        self.transform = transforms.Compose([
+            transforms.RandomRotation(5),
+            transforms.ColorJitter(brightness=0.5, contrast=0.5),
+            # transforms.Resize((384, 384)),  # Fixed size for ViT
+        ])
 
         files = sorted([f for f in os.listdir(image_dir) if f.endswith(".png")])
         for file in tqdm(files[:max_samples], desc="Loading dataset"):
