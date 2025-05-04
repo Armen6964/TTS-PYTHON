@@ -3,7 +3,7 @@ from paddleocr import PaddleOCR
 # Initialize PaddleOCR with custom Armenian dictionary
 ocr = PaddleOCR(
     use_angle_cls=True,
-    lang='en',  # We'll override dict below
+    lang='hy',  # We'll override dict below
     rec_char_dict_path='dict/armenian_dict.txt',
     det_model_dir='./models/det',
     rec_model_dir='./models/rec'
