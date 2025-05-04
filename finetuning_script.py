@@ -128,4 +128,4 @@ def main():
     print("7")
 
 
-# main()
+main()
