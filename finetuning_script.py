@@ -7,6 +7,8 @@ from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, Tra
 
 
 print("1")
+processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
+
 
 # Test the tokenizer with Armenian text
 sample_text = "Ողջույն"  # Armenian for "Hello"
@@ -45,7 +47,6 @@ class ArmenianOCRDataset(Dataset):
         return {"pixel_values": pixel_values, "labels": labels}
 
 
-processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
 model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed")
 model.config.decoder_start_token_id = processor.tokenizer.cls_token_id or processor.tokenizer.pad_token_id
 model.config.pad_token_id = processor.tokenizer.pad_token_id
