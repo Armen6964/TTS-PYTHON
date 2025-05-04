@@ -1,4 +1,3 @@
-import finetuning_script
 import asyncio
 import logging
 from telegram import Update
