@@ -8,6 +8,11 @@ from transformers import VisionEncoderDecoderModel, TrOCRProcessor, Trainer, Tra
 
 print("1")
 
+# Test the tokenizer with Armenian text
+sample_text = "Ողջույն"  # Armenian for "Hello"
+tokens = processor.tokenizer.tokenize(sample_text)
+print(tokens)
+
 class ArmenianOCRDataset(Dataset):
     def __init__(self, image_dir, processor, max_samples=None):
         self.image_dir = image_dir
@@ -111,4 +116,4 @@ def main():
     print("7")
 
 
-main()
+# main()
