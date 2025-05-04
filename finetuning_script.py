@@ -49,11 +49,11 @@ print(f"Original embedding size: {model.decoder.get_input_embeddings().weight.sh
 print(f"New embedding size: {model.decoder.get_input_embeddings().weight.shape[0]}")
 
 # Initialize new embeddings properly
-with torch.no_grad():
-    old_embeddings = model.decoder.get_input_embeddings().weight.data
-    mean_embedding = old_embeddings[:-len(armenian_chars)].mean(dim=0)  # Use mean of existing embeddings
-    for i in range(len(tokenizer)-len(armenian_chars), len(tokenizer)):
-        model.decoder.get_input_embeddings().weight.data[i] = mean_embedding + torch.randn_like(mean_embedding)*0.01
+# with torch.no_grad():
+#     old_embeddings = model.decoder.get_input_embeddings().weight.data
+#     mean_embedding = old_embeddings[:-len(armenian_chars)].mean(dim=0)  # Use mean of existing embeddings
+#     for i in range(len(tokenizer)-len(armenian_chars), len(tokenizer)):
+#         model.decoder.get_input_embeddings().weight.data[i] = mean_embedding + torch.randn_like(mean_embedding)*0.01
 
 # Config updates
 model.config.decoder_start_token_id = tokenizer.cls_token_id or tokenizer.pad_token_id
