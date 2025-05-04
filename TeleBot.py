@@ -15,7 +15,6 @@ from aiogram.filters import Command
 from aiogram.types import Message
 from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
-from tensorflow.python.keras.models import load_model
 from playsound import playsound
 
 app = Flask(__name__)
