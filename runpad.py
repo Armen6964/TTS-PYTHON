@@ -4,7 +4,7 @@ from paddleocr import PaddleOCR
 ocr = PaddleOCR(
     use_angle_cls=True,
     lang='en',
-    rec_char_dict_path='./armenian_dict_sos_eos.txt',
+    rec_char_dict_path='./armenian_dict_padded_662.txt',
     det_model_dir='models/det',
     rec_model_dir='models/rec'
 )
