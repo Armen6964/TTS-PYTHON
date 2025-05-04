@@ -13,3 +13,5 @@ pixel_values = processor(images=image, return_tensors="pt").pixel_values
 outputs = model(pixel_values)
 
 generated_text = processor.batch_decode(outputs.logits)['generated_text']
+
+print(generated_text)
