@@ -27,7 +27,7 @@ tokens = tokenizer.tokenize(test_text)
 print(f"Tokenization test: {tokens}")
 
 # Check for missing characters
-for char in "աբգդեզէըթժիլխծկհձղճմյնշոչպջռսվտրցւփքօֆև":
+for char in armenian_chars:
     if char not in tokenizer.get_vocab():
         print(f"ERROR: '{char}' missing in tokenizer!")
     else:
