@@ -10,7 +10,7 @@ ocr = PaddleOCR(
 )
 
 # Run OCR on an image
-image_path = 'static/armenian_text_line.png'
+image_path = 'static/a.png'
 results = ocr.ocr(image_path, cls=True)
 
 print(results)
