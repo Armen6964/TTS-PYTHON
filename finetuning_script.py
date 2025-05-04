@@ -97,6 +97,10 @@ def main():
     )
     print("6")
     trainer.train()
+
+    processor.save_pretrained("./trained_models/trocr-hye")
+    model.save_pretrained("./trained_models/trocr-hye")
+
     print("7")
 
 
