@@ -31,7 +31,7 @@ access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiI5OTJkN2JlZTU0MDg
 # pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
 processor = TrOCRProcessor.from_pretrained("microsoft/trocr-large-printed")
 model = VisionEncoderDecoderModel.from_pretrained("microsoft/trocr-large-printed")
-device = "cpu"
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 # if "test" not in dataset:
 #     dataset = dataset["train"].train_test_split(test_size=0.1)
