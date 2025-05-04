@@ -4,8 +4,6 @@ from telegram import Update
 from telegram.ext import CallbackContext
 import sys
 import os
-import io
-import cv2
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel, Seq2SeqTrainer, Seq2SeqTrainingArguments
 import torch
 # import pytesseract
@@ -214,65 +212,6 @@ def index():
 @router.message(Command("start"))
 async def command_start_handler(message: Message):
     await message.answer("Ողջույն, այսուհետ ես կլինեմ Ձեր աչքերը։")
-
-#don't take off the #
-# def detect_objects(image):
-#     blob = cv2.dnn.blobFromImage(image, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
-#     net.setInput(blob)
-#     output_layers = [net.getLayerNames()[i - 1] for i in net.getUnconnectedOutLayers()]
-#     outputs = net.forward(output_layers)
-#
-#     detected_objects = []
-#     for out in outputs:
-#         for detection in out:
-#             scores = detection[5:]
-#             class_id = np.argmax(scores)
-#             confidence = scores[class_id]
-#             if confidence > 0.5:  # You can adjust the threshold
-#                 detected_objects.append((class_id, confidence))
-#
-#     return detected_objects
-
-    # Parse predictions (bounding boxes, class IDs, and confidences)
-    # boxes, scores, classes, valid_detections = predictions
-    # return boxes, scores, classes, valid_detections
-
-
-#don't take off the #
-# def draw_boxes(image, boxes, scores, classes, valid_detections):
-#     for i in range(valid_detections[0]):
-#         box = boxes[0][i]
-#         score = scores[0][i]
-#         class_id = int(classes[0][i])
-#
-#         # Get the coordinates of the bounding box
-#         top_left = (int(box[1] * image.shape[1]), int(box[0] * image.shape[0]))
-#         bottom_right = (int(box[3] * image.shape[1]), int(box[2] * image.shape[0]))
-#
-#         # Draw bounding box and label
-#         cv2.rectangle(image, top_left, bottom_right, (255, 0, 0), 2)
-#         label = f"Class {class_id} - {score:.2f}"
-#         cv2.putText(image, label, top_left, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
-#
-#         print("Boxes:", boxes)
-#         print("Scores:", scores)
-#         print("Classes:", classes)
-#         print("Valid Detections:", valid_detections)
-#
-#     return image
-
-
-# def preprocess_image(image):
-#     # Convert image to RGB (OpenCV loads as BGR)
-#     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-#
-#     # Resize to the size expected by YOLOv3 (e.g., 416x416)
-#     image_resized = cv2.resize(image, (416, 416))
-#
-#     # Normalize the image
-#     image_normalized = image_resized / 255.0
-#     image_expanded = np.expand_dims(image_normalized, axis=0)
-#     return image_expanded
 
 
 @router.message(F.photo)

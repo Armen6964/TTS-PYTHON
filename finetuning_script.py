@@ -74,13 +74,13 @@ def collate_fn(batch):
 
 def main():
     print("3")
-    train_dataset = ArmenianOCRDataset("/Users/tat/Desktop/Start_train", processor)
+    train_dataset = ArmenianOCRDataset("../data", processor)
     print("4")
     training_args = TrainingArguments(
-        output_dir="/Users/tat/Desktop/trocr_armenian_model",
+        output_dir="./trained_models/trocr-hye",
         per_device_train_batch_size=4,
         num_train_epochs=5,
-        logging_dir="/Users/tat/Desktop/logs",
+        logging_dir="./static/uploads/logs",
         logging_steps=10,
         save_strategy="epoch",
         save_total_limit=2,
